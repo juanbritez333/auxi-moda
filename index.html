@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Auxi Moda - Catálogo de Tendencias</title>
+    <title>Auxi Moda - Catalogo de Tendencias</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -31,13 +31,7 @@
         }
     </script>
     <style>
-        body {
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            font-family: 'Quicksand', sans-serif;
-        }
+        body { min-height: 100dvh; display: flex; flex-direction: column; overflow-x: hidden; font-family: 'Quicksand', sans-serif; }
         .pastel-gradient { background: linear-gradient(135deg, #FFB7CE 0%, #E6E6FA 100%); }
         #drawer { transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); }
         #drawer.open { transform: translateX(0); }
@@ -62,8 +56,7 @@
 
     <div id="drawer" class="fixed top-0 left-0 h-full w-72 bg-white z-50 shadow-2xl flex flex-col">
         <div class="pastel-gradient p-6 pt-10 relative">
-            <button onclick="closeDrawer()"
-                class="absolute top-4 right-4 p-2 rounded-full bg-white/30 active:scale-90 transition-all">
+            <button onclick="closeDrawer()" class="absolute top-4 right-4 p-2 rounded-full bg-white/30 active:scale-90 transition-all">
                 <span class="material-symbols-outlined text-white">close</span>
             </button>
             <div class="flex flex-col items-start">
@@ -166,9 +159,7 @@
                     <span class="material-symbols-outlined text-6xl text-slate-200">search_off</span>
                     <p class="text-slate-400 font-bold mt-3">No encontramos productos</p>
                     <p class="text-slate-300 text-xs mt-1">Proba con otro filtro o busca en el catalogo</p>
-                    <a href="admin.html" class="inline-block mt-4 px-6 py-2 bg-primary text-white text-xs font-bold rounded-full">
-                        Cargar productos
-                    </a>
+                    <a href="admin.html" class="inline-block mt-4 px-6 py-2 bg-primary text-white text-xs font-bold rounded-full">Cargar productos</a>
                 </div>
             </section>
         </main>
@@ -235,14 +226,8 @@
         let currentFilterType = null;
         let pendingFilter = null;
 
-        function openDrawer() {
-            document.getElementById('drawer').classList.add('open');
-            document.getElementById('drawer-overlay').classList.add('open');
-        }
-        function closeDrawer() {
-            document.getElementById('drawer').classList.remove('open');
-            document.getElementById('drawer-overlay').classList.remove('open');
-        }
+        function openDrawer() { document.getElementById('drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); }
+        function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); }
 
         function openFilterPanel(type) {
             currentFilterType = type;
@@ -250,8 +235,7 @@
             const cv = activePrecio;
             document.getElementById('filter-panel-options').innerHTML = PRECIOS.map(opt =>
                 `<button onclick="selectPendingFilter('${opt}')" id="opt-${opt.replace(/\s/g,'')}"
-                    class="px-4 py-2 rounded-full text-xs font-bold border-2 transition-all ${cv===opt?'border-primary bg-primary text-white':'border-slate-200 bg-slate-50 text-slate-600'}">
-                    ${opt}</button>`
+                    class="px-4 py-2 rounded-full text-xs font-bold border-2 transition-all ${cv===opt?'border-primary bg-primary text-white':'border-slate-200 bg-slate-50 text-slate-600'}">${opt}</button>`
             ).join('');
             pendingFilter = cv;
             document.getElementById('filter-panel').classList.add('open');
@@ -265,14 +249,8 @@
                 btn.className = `px-4 py-2 rounded-full text-xs font-bold border-2 transition-all ${pendingFilter===opt?'border-primary bg-primary text-white':'border-slate-200 bg-slate-50 text-slate-600'}`;
             });
         }
-        function applyFilter() {
-            activePrecio = pendingFilter;
-            renderProducts();
-        }
-        function closeFilterPanel() {
-            document.getElementById('filter-panel').classList.remove('open');
-            document.getElementById('filter-panel-overlay').classList.remove('open');
-        }
+        function applyFilter() { activePrecio = pendingFilter; renderProducts(); }
+        function closeFilterPanel() { document.getElementById('filter-panel').classList.remove('open'); document.getElementById('filter-panel-overlay').classList.remove('open'); }
 
         function setCategory(cat, btn) {
             activeCategory = cat;
@@ -325,7 +303,7 @@
             grid.innerHTML = products.map((p, i) => {
                 const inStock = p.inStock !== false;
                 const link = inStock
-                    ? `href="product-detail.html?name=${encodeURIComponent(p.name)}&price=${encodeURIComponent(p.price)}&img=${encodeURIComponent(p.img)}"`
+                    ? `href="product-detail.html?id=${encodeURIComponent(p.id)}"`
                     : '';
                 const tag = p.badge
                     ? `<div class="absolute top-2 left-2"><span class="bg-white/80 backdrop-blur-sm text-slate-700 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full">${p.badge}</span></div>`
@@ -334,7 +312,7 @@
                     ? `<div class="badge-agotado"><span>AGOTADO</span></div>`
                     : '';
                 return `
-                    <a ${link} class="product-card-touch group flex flex-col gap-2 ${!inStock ? 'card-agotado' : ''}" style="animation-delay:${i*0.05}s">
+                    <a ${link} class="product-card-touch group flex flex-col gap-2 ${!inStock ? 'card-agotado' : ''}">
                         <div class="relative aspect-[3/4] overflow-hidden rounded-2xl bg-slate-100 shadow-sm transition-transform active:scale-95">
                             <img alt="${p.name}" class="h-full w-full object-cover" src="${p.img}"
                                 onerror="this.src='https://placehold.co/300x400/FFB7CE/white?text=AM'" />
