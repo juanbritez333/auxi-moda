@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Auxi Moda - Carrito de Compras</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#FFB7CE", "mint": "#E0FFF0", "lavender": "#E6E6FA", "background-light": "#FFFFFF" }, fontFamily: { "display": ["Quicksand", "sans-serif"] }, borderRadius: { "DEFAULT": "0.5rem", "xl": "1.5rem", "full": "9999px" } } } }
+    </script>
+    <style>
+        body { font-family: 'Quicksand', sans-serif; overflow-x: hidden; min-height: 100dvh; }
+        .whatsapp-btn { background: #25D366; box-shadow: 0 8px 30px rgba(37,211,102,0.4); }
+        .whatsapp-btn:active { transform: scale(0.96); }
+        @keyframes pulse-green { 0%,100%{box-shadow:0 8px 30px rgba(37,211,102,0.4);} 50%{box-shadow:0 8px 40px rgba(37,211,102,0.65);} }
+        .whatsapp-btn { animation: pulse-green 2s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-background-light text-slate-900">
+    <div class="relative flex min-h-screen flex-col animate-fade-in">
+        <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md">
+            <div class="flex items-center px-4 py-3 justify-between">
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="p-2 hover:bg-slate-100 rounded-full transition-colors active:scale-90">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                    </a>
+                    <h1 class="text-lg font-bold tracking-tighter uppercase">Mi Carrito</h1>
+                </div>
+                <span class="text-xs bg-primary/20 text-primary font-bold px-3 py-1 rounded-full">Auxi Moda</span>
+            </div>
+        </header>
+        <main class="flex-1 px-4 py-6 space-y-6 max-w-lg mx-auto w-full">
+            <div id="cart-items" class="space-y-4">
+                <div class="flex gap-4 bg-white p-4 rounded-3xl border border-slate-100 shadow-sm animate-fade-in">
+                    <div class="w-24 h-24 bg-slate-100 rounded-2xl overflow-hidden flex-shrink-0">
+                        <img id="cart-item-img" alt="Product" class="h-full w-full object-cover" src="https://placehold.co/96x96/FFB7CE/white?text=AM" />
+                    </div>
+                    <div class="flex-1 flex flex-col justify-between py-1">
+                        <div>
+                            <h3 id="cart-item-name" class="font-bold text-slate-800 text-base tracking-tight">Cargando...</h3>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Talla: Unica</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p id="cart-item-price" class="font-black text-primary text-xl">Gs. 0</p>
+                            <div class="flex items-center gap-3 bg-slate-50 px-3 py-1.5 rounded-2xl">
+                                <button id="btn-minus" class="text-slate-400 hover:text-primary font-bold text-lg leading-none">-</button>
+                                <span id="qty" class="font-black text-sm min-w-[20px] text-center">1</span>
+                                <button id="btn-plus" class="text-slate-400 hover:text-primary font-bold text-lg leading-none">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <input type="text" placeholder="Codigo de descuento (ej: YOUTH20)" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:ring-2 focus:ring-primary/50" />
+                <button class="px-4 py-2.5 bg-lavender text-slate-700 font-bold text-xs rounded-xl active:scale-95 transition-transform">Aplicar</button>
+            </div>
+            <div class="bg-slate-50 p-6 rounded-[32px] space-y-4">
+                <h2 class="font-black text-lg tracking-tight">Resumen del Pedido</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between text-slate-500 font-medium text-sm">
+                        <span>Subtotal (<span id="qty-summary">1</span> prenda)</span>
+                        <span id="subtotal">Gs. 0</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500 font-medium text-sm">
+                        <span>Envio</span>
+                        <span class="text-green-500 font-bold uppercase text-xs">GRATIS!</span>
+                    </div>
+                    <div class="h-px bg-slate-200 my-2"></div>
+                    <div class="flex justify-between font-black text-2xl">
+                        <span>Total</span>
+                        <span id="total" class="text-primary tracking-tighter">Gs. 0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <a id="whatsapp-btn" href="#" target="_blank" class="whatsapp-btn flex items-center justify-center gap-3 w-full py-5 text-white font-black text-lg rounded-[24px] uppercase tracking-widest no-underline">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                    Pedir por WhatsApp
+                </a>
+                <a href="index.html" class="flex items-center justify-center gap-2 w-full py-3 text-slate-400 font-semibold text-sm">
+                    <span class="material-symbols-outlined" style="font-size:18px;width:18px;height:18px">arrow_back</span>
+                    Seguir comprando
+                </a>
+            </div>
+        </main>
+        <nav class="fixed bottom-0 w-full border-t border-slate-200 bg-white/95 backdrop-blur-md px-4 pb-6 pt-2 z-50">
+            <div class="flex items-center justify-around max-w-lg mx-auto">
+                <a class="flex flex-col items-center gap-1 text-slate-400" href="index.html"><span class="material-symbols-outlined">storefront</span><span class="text-[10px] font-bold uppercase tracking-wider">Tienda</span></a>
+                <a class="flex flex-col items-center gap-1 text-slate-400" href="#"><span class="material-symbols-outlined">search</span><span class="text-[10px] font-bold uppercase tracking-wider">Buscar</span></a>
+                <a class="flex flex-col items-center gap-1 bottom-nav-active" href="cart.html"><span class="material-symbols-outlined">shopping_bag</span><span class="text-[10px] font-bold uppercase tracking-wider">Carrito</span></a>
+                <a class="flex flex-col items-center gap-1 text-slate-400" href="admin.html"><span class="material-symbols-outlined">admin_panel_settings</span><span class="text-[10px] font-bold uppercase tracking-wider">Admin</span></a>
+            </div>
+        </nav>
+    </div>
+    <script>
+        const WHATSAPP_NUMBER = '595991729824';
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('name') || 'Vestido Seda';
+        const price = params.get('price') || 'Gs. 1.200.000';
+        const img = params.get('img') || '';
+        const rawPrice = parseInt(price.replace(/\D/g, '')) || 0;
+        let qty = 1;
+        document.getElementById('cart-item-name').innerText = name;
+        document.getElementById('cart-item-price').innerText = price;
+        if (img) document.getElementById('cart-item-img').src = img;
+        function formatGs(n) { return 'Gs. ' + n.toLocaleString('es-PY'); }
+        function updateSummary() {
+            const total = rawPrice * qty;
+            document.getElementById('qty').innerText = qty;
+            document.getElementById('qty-summary').innerText = qty;
+            document.getElementById('subtotal').innerText = qty > 0 ? formatGs(total) : price;
+            document.getElementById('total').innerText = qty > 0 ? formatGs(total) : price;
+            const msg = 'Hola Auxi Moda!\nQuiero hacer un pedido:\n\nProducto: ' + name + '\nCantidad: ' + qty + '\nTotal: ' + (qty > 0 ? formatGs(total) : price) + '\n\nEsta disponible?';
+            document.getElementById('whatsapp-btn').href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
+        }
+        document.getElementById('btn-plus').addEventListener('click', () => { qty++; updateSummary(); });
+        document.getElementById('btn-minus').addEventListener('click', () => { if (qty > 1) qty--; updateSummary(); });
+        updateSummary();
+    </script>
+</body>
+</html>
