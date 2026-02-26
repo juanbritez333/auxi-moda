@@ -1,37 +1,146 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Auxi Moda - Panel de Administracion</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <script>
         tailwind.config = { theme: { extend: { colors: { "primary": "#FFB7CE", "mint": "#E0FFF0", "lavender": "#E6E6FA", "palepink": "#FFEBEE" }, fontFamily: { "display": ["Quicksand", "sans-serif"] }, borderRadius: { "DEFAULT": "0.5rem", "xl": "1.5rem", "full": "9999px" } } } }
     </script>
     <style>
-        body { font-family: 'Quicksand', sans-serif; overflow-x: hidden; background: #FAFAFA; }
-        .img-preview { width: 80px; height: 100px; object-fit: cover; border-radius: 12px; }
-        .tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: flex; align-items: center; justify-content: center; }
-        .modal { background: white; border-radius: 24px; padding: 24px; width: 90%; max-width: 380px; }
+        body {
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+            background: #FAFAFA;
+        }
+
+        .img-preview {
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            width: 90%;
+            max-width: 380px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 183, 206, 0.4);
+            border-top-color: #FFB7CE;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .out-of-stock {
+            opacity: 0.5;
+        }
+
+        .stock-badge-agotado {
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 999px;
+        }
+
+        .stock-badge-ok {
+            background: #22c55e;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 999px;
+        }
     </style>
 </head>
+
 <body class="min-h-screen">
+
     <!-- Login Overlay -->
-    <div id="login-overlay" class="fixed inset-0 bg-slate-50 z-[100] flex items-center justify-center p-4">
+    <div id="login-overlay" class="fixed inset-0 bg-slate-50 z-[300] flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-xl text-center border border-slate-200">
-            <div class="w-16 h-16 bg-primary/20 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="material-symbols-outlined" style="font-size: 32px">lock</span>
+            <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="material-symbols-outlined text-primary" style="font-size:32px">lock</span>
             </div>
             <h2 class="font-black text-2xl mb-2 text-slate-800">Acceso Admin</h2>
-            <p class="text-sm text-slate-500 mb-6">Ingresa la contraseña para gestionar el catalogo.</p>
-            <input type="password" id="admin-pass" placeholder="Contraseña..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-center mb-4 focus:outline-none focus:ring-2 focus:ring-primary/50 font-bold tracking-widest text-slate-700" onkeypress="if(event.key === 'Enter') checkPassword()">
-            <p id="login-error" class="hidden text-xs text-red-500 font-bold mb-4 flex items-center justify-center gap-1"><span class="material-symbols-outlined text-sm" style="font-size:16px">error</span> Contraseña incorrecta</p>
-            <button onclick="checkPassword()" class="w-full py-4 bg-primary text-white font-black rounded-xl active:scale-95 transition-all shadow-md">Ingresar al Panel</button>
+            <p class="text-sm text-slate-500 mb-6">Ingresa la contrasena para gestionar el catalogo.</p>
+            <input type="password" id="admin-pass" placeholder="Contrasena..."
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-center mb-3 focus:outline-none focus:ring-2 focus:ring-primary/50 font-bold tracking-widest text-slate-700"
+                onkeypress="if(event.key==='Enter') checkPassword()">
+            <p id="login-error" class="hidden text-xs text-red-500 font-bold mb-3">Contrasena incorrecta</p>
+            <button onclick="checkPassword()"
+                class="w-full py-4 bg-primary text-white font-black rounded-xl active:scale-95 transition-all shadow-md">
+                Ingresar al Panel
+            </button>
         </div>
     </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Header -->
     <header class="sticky top-0 z-50 bg-white border-b border-slate-200">
         <div class="flex items-center px-4 py-3 justify-between">
             <div class="flex items-center gap-3">
@@ -43,25 +152,37 @@
             <span class="text-xs bg-primary/20 text-primary font-bold px-3 py-1 rounded-full">Auxi Moda</span>
         </div>
     </header>
+
     <main class="px-4 py-6 pb-24 max-w-lg mx-auto space-y-6">
+
+        <!-- Add / Edit Product Form -->
         <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-            <h2 class="font-black text-xl mb-5 flex items-center gap-2">
+            <h2 id="form-title" class="font-black text-xl mb-5 flex items-center gap-2">
                 <span class="w-2 h-6 bg-primary rounded-full"></span>
                 Cargar Nueva Prenda
             </h2>
+            <input type="hidden" id="editing-id" value="">
+
             <div class="space-y-4">
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Nombre *</label>
-                    <input id="inp-name" type="text" placeholder="Ej: Vestido Floral" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100" />
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Nombre
+                        *</label>
+                    <input id="inp-name" type="text" placeholder="Ej: Vestido Floral"
+                        class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100" />
                 </div>
+
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Precio (Gs.) *</label>
-                        <input id="inp-price" type="number" placeholder="Ej: 450000" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100" />
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Precio
+                            (Gs.) *</label>
+                        <input id="inp-price" type="number" placeholder="Ej: 450000"
+                            class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100" />
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Categoria *</label>
-                        <select id="inp-category" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Categoria
+                            *</label>
+                        <select id="inp-category"
+                            class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100">
                             <option value="vestido">Vestidos</option>
                             <option value="casual">Casual</option>
                             <option value="deportiva">Deportiva</option>
@@ -69,9 +190,12 @@
                         </select>
                     </div>
                 </div>
+
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Etiquetar como</label>
-                    <select id="inp-badge" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Etiquetar
+                        como</label>
+                    <select id="inp-badge"
+                        class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100">
                         <option value="">Sin etiqueta</option>
                         <option value="Nuevo">Nuevo</option>
                         <option value="Oferta">Oferta</option>
@@ -79,72 +203,142 @@
                         <option value="Exclusivo">Exclusivo</option>
                     </select>
                 </div>
+
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Imagen del producto *</label>
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Imagen del
+                        producto *</label>
                     <div class="flex gap-2 mb-3">
-                        <button onclick="setImgSource('url')" id="btn-url" class="flex-1 py-2 rounded-xl text-xs font-bold border-2 border-primary bg-primary/10 text-primary">Pegar URL</button>
-                        <button onclick="setImgSource('upload')" id="btn-upload" class="flex-1 py-2 rounded-xl text-xs font-bold border-2 border-slate-200 text-slate-500">Subir foto</button>
+                        <button onclick="setImgSource('url')" id="btn-url"
+                            class="flex-1 py-2 rounded-xl text-xs font-bold border-2 border-primary bg-primary/10 text-primary">Pegar URL</button>
+                        <button onclick="setImgSource('upload')" id="btn-upload"
+                            class="flex-1 py-2 rounded-xl text-xs font-bold border-2 border-slate-200 text-slate-500">Subir foto</button>
                     </div>
                     <div id="source-url">
-                        <input id="inp-img-url" type="url" placeholder="https://..." class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100" />
+                        <input id="inp-img-url" type="url" placeholder="https://..."
+                            class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100" />
                     </div>
                     <div id="source-upload" class="hidden">
-                        <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
-                            <span class="material-symbols-outlined text-slate-400 text-4xl">cloud_upload</span>
+                        <label
+                            class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                            <span class="material-symbols-outlined text-slate-400"
+                                style="font-size:40px">cloud_upload</span>
                             <span class="text-xs text-slate-400 mt-1">Toca para elegir una foto</span>
-                            <input id="inp-img-file" type="file" accept="image/*" class="hidden" onchange="previewUpload(this)" />
+                            <input id="inp-img-file" type="file" accept="image/*" class="hidden"
+                                onchange="previewUpload(this)" />
                         </label>
                         <div id="upload-preview" class="mt-2 hidden">
                             <img id="upload-preview-img" class="img-preview" />
+                            <span class="text-xs text-slate-400 ml-2">Vista previa</span>
                         </div>
                     </div>
                 </div>
+
                 <div id="img-preview-box" class="hidden flex-col items-center gap-2">
                     <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Vista previa</label>
                     <img id="img-preview-el" class="img-preview shadow-sm" />
                 </div>
-                <button onclick="addProduct()" class="w-full py-4 bg-primary text-white font-black text-base rounded-2xl shadow-lg shadow-primary/30 active:scale-95 transition-transform uppercase tracking-widest">
-                    + Agregar al Catalogo
-                </button>
+
+                <div class="flex gap-3">
+                    <button onclick="saveProduct()" id="save-btn"
+                        class="flex-1 py-4 bg-primary text-white font-black text-base rounded-2xl shadow-lg shadow-primary/30 active:scale-95 transition-transform uppercase tracking-widest flex items-center justify-center gap-2">
+                        <span id="save-btn-text">+ Agregar al Catalogo</span>
+                    </button>
+                    <button id="cancel-edit-btn" onclick="cancelEdit()"
+                        class="hidden py-4 px-5 bg-slate-100 text-slate-600 font-bold rounded-2xl active:scale-95 transition-transform">
+                        Cancelar
+                    </button>
+                </div>
             </div>
         </div>
+
+        <!-- Catalog List -->
         <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
             <div class="flex items-center justify-between mb-5">
                 <h2 class="font-black text-xl flex items-center gap-2">
                     <span class="w-2 h-6 bg-mint rounded-full"></span>
                     Mis Prendas
                 </h2>
-                <span id="product-count" class="text-xs bg-slate-100 text-slate-500 font-bold px-3 py-1 rounded-full">0 productos</span>
+                <span id="product-count" class="text-xs bg-slate-100 text-slate-500 font-bold px-3 py-1 rounded-full">
+                    <span class="spinner"></span>
+                </span>
             </div>
             <div id="catalog-list" class="space-y-3">
-                <p class="text-slate-400 text-sm text-center py-6" id="empty-msg">Todavia no cargaste ninguna prenda.</p>
+                <div class="flex flex-col items-center py-8 gap-3">
+                    <div class="spinner"></div>
+                    <p class="text-slate-400 text-sm">Cargando catalogo...</p>
+                </div>
             </div>
         </div>
+
+        <!-- Info box -->
         <div class="bg-lavender/50 rounded-2xl p-4 flex gap-3 items-start">
-            <span class="material-symbols-outlined text-slate-500 text-xl mt-0.5">info</span>
+            <span class="material-symbols-outlined text-slate-500 text-xl mt-0.5">cloud</span>
             <div>
-                <p class="text-xs font-bold text-slate-600">Como funciona?</p>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Los productos que cargas aca aparecen automaticamente en la tienda. Se guardan en el navegador. Para una solucion permanente, guarda las fotos en Google Drive y usa el enlace.</p>
+                <p class="text-xs font-bold text-slate-600">Catalogo en la nube</p>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Todo lo que agregas se guarda en Firebase y lo
+                    ven todos tus clientes al instante.</p>
             </div>
         </div>
     </main>
+
+    <!-- Delete Modal -->
     <div id="del-modal" class="modal-bg hidden">
         <div class="modal">
             <h3 class="font-black text-lg mb-2">Eliminar prenda?</h3>
             <p class="text-slate-500 text-sm mb-5" id="del-modal-name">Esta accion no se puede deshacer.</p>
             <div class="flex gap-3">
-                <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">Cancelar</button>
-                <button onclick="confirmDelete()" class="flex-1 py-3 bg-red-400 text-white font-bold rounded-xl text-sm">Eliminar</button>
+                <button onclick="closeDeleteModal()"
+                    class="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">Cancelar</button>
+                <button onclick="confirmDelete()"
+                    class="flex-1 py-3 bg-red-400 text-white font-bold rounded-xl text-sm">Eliminar</button>
             </div>
         </div>
     </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy }
+            from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // =============================================
+        //  PEGA AQUI TU CONFIGURACION DE FIREBASE
+        // =============================================
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_PROYECTO.firebaseapp.com",
+            projectId: "TU_PROYECTO_ID",
+            storageBucket: "TU_PROYECTO.appspot.com",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+        // =============================================
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const COLL = "productos";
+
+        // --- Expose DB helpers to global scope ---
+        window._db = { db, collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp, query, orderBy };
+        window._COLL = COLL;
+
+        // Realtime listener
+        const q = query(collection(db, COLL), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const products = [];
+            snapshot.forEach(d => products.push({ id: d.id, ...d.data() }));
+            window._renderCatalog(products);
+        }, (err) => {
+            console.error(err);
+            document.getElementById('catalog-list').innerHTML =
+                '<p class="text-red-400 text-sm text-center py-4">Error al conectar con Firebase.<br>Verifica la configuracion.</p>';
+        });
+    </script>
+
     <script>
-        const STORAGE_KEY = 'auxiModa_catalog';
-        let deleteTargetId = null, imgSourceMode = 'url', uploadedBase64 = null;
-        
+        // ---- Auth ----
         function checkPassword() {
             const pass = document.getElementById('admin-pass').value;
-            // Contrasena de acceso: auxi123
             if (pass === 'auxi123') {
                 document.getElementById('login-overlay').style.display = 'none';
                 sessionStorage.setItem('admin_logged_in', 'true');
@@ -154,59 +348,217 @@
             }
         }
 
-        function setImgSource(mode) {
-            imgSourceMode = mode;
-            document.getElementById('source-url').classList.toggle('hidden', mode !== 'url');
-            document.getElementById('source-upload').classList.toggle('hidden', mode !== 'upload');
-            document.getElementById('btn-url').className = mode === 'url' ? 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-primary bg-primary/10 text-primary' : 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-slate-200 text-slate-500';
-            document.getElementById('btn-upload').className = mode === 'upload' ? 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-primary bg-primary/10 text-primary' : 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-slate-200 text-slate-500';
-        }
-        function previewUpload(input) {
-            const file = input.files[0]; if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => { uploadedBase64 = e.target.result; document.getElementById('upload-preview').classList.remove('hidden'); document.getElementById('upload-preview-img').src = uploadedBase64; };
-            reader.readAsDataURL(file);
-        }
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('admin_logged_in') === 'true') {
                 document.getElementById('login-overlay').style.display = 'none';
             }
-            document.getElementById('inp-img-url').addEventListener('input', (e) => {
-                const url = e.target.value.trim();
-                const box = document.getElementById('img-preview-box'); const el = document.getElementById('img-preview-el');
+            const urlInp = document.getElementById('inp-img-url');
+            urlInp.addEventListener('input', () => {
+                const url = urlInp.value.trim();
+                const box = document.getElementById('img-preview-box');
+                const el = document.getElementById('img-preview-el');
                 if (url) { box.classList.remove('hidden'); box.classList.add('flex'); el.src = url; }
                 else { box.classList.add('hidden'); box.classList.remove('flex'); }
             });
-            renderCatalog();
         });
-        function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-        function saveProducts(p) { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
-        function addProduct() {
+
+        // ---- Image source ----
+        let imgSourceMode = 'url', uploadedBase64 = null;
+        function setImgSource(mode) {
+            imgSourceMode = mode;
+            document.getElementById('source-url').classList.toggle('hidden', mode !== 'url');
+            document.getElementById('source-upload').classList.toggle('hidden', mode !== 'upload');
+            document.getElementById('btn-url').className = mode === 'url'
+                ? 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-primary bg-primary/10 text-primary'
+                : 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-slate-200 text-slate-500';
+            document.getElementById('btn-upload').className = mode === 'upload'
+                ? 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-primary bg-primary/10 text-primary'
+                : 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-slate-200 text-slate-500';
+        }
+        function previewUpload(input) {
+            const file = input.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                uploadedBase64 = e.target.result;
+                document.getElementById('upload-preview').classList.remove('hidden');
+                document.getElementById('upload-preview-img').src = uploadedBase64;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ---- Save (Add or Edit) ----
+        async function saveProduct() {
             const name = document.getElementById('inp-name').value.trim();
             const priceRaw = document.getElementById('inp-price').value.trim();
             const category = document.getElementById('inp-category').value;
             const badge = document.getElementById('inp-badge').value;
-            let imgSrc = imgSourceMode === 'url' ? document.getElementById('inp-img-url').value.trim() : (uploadedBase64 || '');
-            if (!name || !priceRaw || !imgSrc) { alert('Por favor completa el nombre, precio e imagen.'); return; }
+            const editingId = document.getElementById('editing-id').value;
+            let imgSrc = imgSourceMode === 'url'
+                ? document.getElementById('inp-img-url').value.trim()
+                : (uploadedBase64 || '');
+
+            // If editing and no new image provided, keep existing
+            if (editingId && !imgSrc) {
+                imgSrc = window._currentEditImg || '';
+            }
+
+            if (!name || !priceRaw || !imgSrc) {
+                alert('Por favor completa nombre, precio e imagen.'); return;
+            }
+
+            const btn = document.getElementById('save-btn');
+            btn.disabled = true;
+            document.getElementById('save-btn-text').innerHTML = '<span class="spinner"></span>';
+
             const price = Number(priceRaw);
-            const product = { id: Date.now().toString(), name, price: 'Gs. ' + price.toLocaleString('es-PY'), rawPrice: price, category, badge, img: imgSrc };
-            const products = getProducts(); products.unshift(product); saveProducts(products); renderCatalog(); resetForm();
+            const productData = {
+                name, price: 'Gs. ' + price.toLocaleString('es-PY'),
+                rawPrice: price, category, badge, img: imgSrc
+            };
+
+            try {
+                const { db, collection, addDoc, doc, updateDoc, serverTimestamp } = window._db;
+                if (editingId) {
+                    await updateDoc(doc(db, window._COLL, editingId), productData);
+                    showToast('Prenda actualizada');
+                    cancelEdit();
+                } else {
+                    productData.createdAt = serverTimestamp();
+                    productData.inStock = true;
+                    await addDoc(collection(db, window._COLL), productData);
+                    showToast('Prenda agregada al catalogo');
+                    resetForm();
+                }
+            } catch (e) {
+                alert('Error al guardar: ' + e.message);
+            }
+            btn.disabled = false;
+            document.getElementById('save-btn-text').textContent = editingId ? 'Guardar Cambios' : '+ Agregar al Catalogo';
         }
+
         function resetForm() {
-            ['inp-name','inp-price','inp-img-url','inp-badge'].forEach(id => document.getElementById(id).value = '');
+            ['inp-name', 'inp-price', 'inp-img-url'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('inp-badge').value = '';
             document.getElementById('inp-img-file').value = '';
-            document.getElementById('img-preview-box').classList.add('hidden'); document.getElementById('img-preview-box').classList.remove('flex');
-            document.getElementById('upload-preview').classList.add('hidden'); uploadedBase64 = null;
+            document.getElementById('img-preview-box').classList.add('hidden');
+            document.getElementById('img-preview-box').classList.remove('flex');
+            document.getElementById('upload-preview').classList.add('hidden');
+            uploadedBase64 = null;
         }
-        function renderCatalog() {
-            const products = getProducts();
-            document.getElementById('product-count').textContent = products.length + ' producto' + (products.length !== 1 ? 's' : '');
-            document.getElementById('empty-msg').style.display = products.length === 0 ? 'block' : 'none';
-            document.getElementById('catalog-list').innerHTML = products.map(p => '<div class="flex gap-4 items-center p-3 bg-slate-50 rounded-2xl border border-slate-100"><img src="' + p.img + '" class="img-preview flex-shrink-0" onerror="this.src=\'https://placehold.co/80x100/FFB7CE/white?text=?\'" /><div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-sm truncate">' + p.name + '</p><p class="text-primary font-black text-base">' + p.price + '</p><p class="text-slate-400 text-xs capitalize">' + p.category + '</p></div><button onclick="openDeleteModal(\'' + p.id + '\', \'' + p.name.replace(/'/g, "\\'") + '\')" class="p-2 text-red-300 hover:text-red-500 active:scale-90 flex-shrink-0"><span class="material-symbols-outlined">delete</span></button></div>').join('');
+
+        // ---- Edit ----
+        function startEdit(p) {
+            document.getElementById('editing-id').value = p.id;
+            document.getElementById('inp-name').value = p.name;
+            document.getElementById('inp-price').value = p.rawPrice;
+            document.getElementById('inp-category').value = p.category;
+            document.getElementById('inp-badge').value = p.badge || '';
+            document.getElementById('inp-img-url').value = p.img;
+            window._currentEditImg = p.img;
+
+            // Show preview
+            const box = document.getElementById('img-preview-box');
+            box.classList.remove('hidden'); box.classList.add('flex');
+            document.getElementById('img-preview-el').src = p.img;
+
+            document.getElementById('form-title').innerHTML = '<span class="w-2 h-6 bg-yellow-300 rounded-full"></span> Editando Prenda';
+            document.getElementById('save-btn-text').textContent = 'Guardar Cambios';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            setImgSource('url');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        function openDeleteModal(id, name) { deleteTargetId = id; document.getElementById('del-modal-name').textContent = '"' + name + '" sera eliminada.'; document.getElementById('del-modal').classList.remove('hidden'); }
-        function closeDeleteModal() { deleteTargetId = null; document.getElementById('del-modal').classList.add('hidden'); }
-        function confirmDelete() { if (!deleteTargetId) return; saveProducts(getProducts().filter(p => p.id !== deleteTargetId)); renderCatalog(); closeDeleteModal(); }
+
+        function cancelEdit() {
+            document.getElementById('editing-id').value = '';
+            window._currentEditImg = '';
+            document.getElementById('form-title').innerHTML = '<span class="w-2 h-6 bg-primary rounded-full"></span> Cargar Nueva Prenda';
+            document.getElementById('save-btn-text').textContent = '+ Agregar al Catalogo';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+            resetForm();
+        }
+
+        // ---- Stock toggle ----
+        async function toggleStock(id, currentInStock) {
+            try {
+                const { db, doc, updateDoc } = window._db;
+                await updateDoc(doc(db, window._COLL, id), { inStock: !currentInStock });
+                showToast(currentInStock ? 'Marcada como Agotada' : 'Marcada como Disponible');
+            } catch (e) { alert('Error: ' + e.message); }
+        }
+
+        // ---- Delete ----
+        let deleteTargetId = null;
+        function openDeleteModal(id, name) {
+            deleteTargetId = id;
+            document.getElementById('del-modal-name').textContent = '"' + name + '" sera eliminada del catalogo.';
+            document.getElementById('del-modal').classList.remove('hidden');
+        }
+        function closeDeleteModal() {
+            deleteTargetId = null;
+            document.getElementById('del-modal').classList.add('hidden');
+        }
+        async function confirmDelete() {
+            if (!deleteTargetId) return;
+            try {
+                const { db, doc, deleteDoc } = window._db;
+                await deleteDoc(doc(db, window._COLL, deleteTargetId));
+                showToast('Prenda eliminada');
+                closeDeleteModal();
+            } catch (e) { alert('Error al eliminar: ' + e.message); }
+        }
+
+        // ---- Render ----
+        window._renderCatalog = function (products) {
+            const count = document.getElementById('product-count');
+            const list = document.getElementById('catalog-list');
+            count.textContent = products.length + ' producto' + (products.length !== 1 ? 's' : '');
+
+            if (products.length === 0) {
+                list.innerHTML = '<p class="text-slate-400 text-sm text-center py-6">Todavia no cargaste ninguna prenda.</p>';
+                return;
+            }
+
+            list.innerHTML = products.map(p => {
+                const inStock = p.inStock !== false;
+                const safeP = JSON.stringify(p).replace(/"/g, '&quot;');
+                return `
+                <div class="flex gap-3 items-start p-3 rounded-2xl border ${inStock ? 'bg-slate-50 border-slate-100' : 'bg-red-50 border-red-100 out-of-stock'}">
+                    <div class="relative flex-shrink-0">
+                        <img src="${p.img}" class="img-preview" onerror="this.src='https://placehold.co/80x100/FFB7CE/white?text=?'" />
+                        ${!inStock ? '<div class="absolute inset-0 flex items-center justify-center"><span class="stock-badge-agotado">AGOTADO</span></div>' : ''}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-slate-800 text-sm truncate">${p.name}</p>
+                        <p class="text-primary font-black text-base">${p.price}</p>
+                        <p class="text-slate-400 text-xs capitalize">${p.category}${p.badge ? ' · ' + p.badge : ''}</p>
+                        <div class="flex gap-2 mt-2 flex-wrap">
+                            <button onclick='startEdit(${safeP})'
+                                class="flex items-center gap-1 px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-xl text-xs font-bold active:scale-95 transition-all">
+                                <span class="material-symbols-outlined" style="font-size:15px">edit</span> Editar
+                            </button>
+                            <button onclick="toggleStock('${p.id}', ${inStock})"
+                                class="flex items-center gap-1 px-3 py-1.5 ${inStock ? 'bg-slate-200 text-slate-600' : 'bg-green-100 text-green-700'} rounded-xl text-xs font-bold active:scale-95 transition-all">
+                                <span class="material-symbols-outlined" style="font-size:15px">${inStock ? 'inventory_2' : 'check_circle'}</span>
+                                ${inStock ? 'Sin Stock' : 'Disponible'}
+                            </button>
+                            <button onclick="openDeleteModal('${p.id}', '${p.name.replace(/'/g, "\\'")}')"
+                                class="flex items-center gap-1 px-3 py-1.5 bg-red-100 text-red-500 rounded-xl text-xs font-bold active:scale-95 transition-all">
+                                <span class="material-symbols-outlined" style="font-size:15px">delete</span> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+
+        // ---- Toast ----
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
     </script>
 </body>
+
 </html>
