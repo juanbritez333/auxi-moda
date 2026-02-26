@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Auxi Moda - Catalogo de Tendencias</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = { darkMode:"class", theme:{ extend:{ colors:{ "primary":"#FFB7CE","mint":"#E0FFF0","lavender":"#E6E6FA","babyblue":"#E0F4FF","palepink":"#FFEBEE","background-light":"#FFFFFF","background-dark":"#1A1A1A" }, fontFamily:{ "display":["Quicksand","sans-serif"] }, borderRadius:{ "DEFAULT":"0.5rem","lg":"1rem","xl":"1.5rem","full":"9999px" } } } }
+    </script>
+    <style>
+        body { min-height:100dvh; display:flex; flex-direction:column; overflow-x:hidden; font-family:'Quicksand',sans-serif; }
+        .pastel-gradient { background: linear-gradient(135deg, #FFB7CE 0%, #E6E6FA 100%); }
+        #drawer { transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); }
+        #drawer.open { transform: translateX(0); }
+        #drawer-overlay { opacity:0; pointer-events:none; transition: opacity 0.3s; }
+        #drawer-overlay.open { opacity:1; pointer-events:all; }
+        .filter-btn.active,.cat-btn.active { background:#FFB7CE !important; color:white !important; }
+        #filter-panel { transform: translateY(100%); transition: transform 0.25s ease; }
+        #filter-panel.open { transform: translateY(0); }
+        #filter-panel-overlay { opacity:0; pointer-events:none; transition: opacity 0.25s; }
+        #filter-panel-overlay.open { opacity:1; pointer-events:all; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-40" onclick="closeDrawer()"></div>
+
+    <div id="drawer" class="fixed top-0 left-0 h-full w-72 bg-white z-50 shadow-2xl flex flex-col">
+        <div class="pastel-gradient p-6 pt-10 relative">
+            <button onclick="closeDrawer()" class="absolute top-4 right-4 p-2 rounded-full bg-white/30 active:scale-90 transition-all">
+                <span class="material-symbols-outlined text-white">close</span>
+            </button>
+            <p class="text-white/80 text-xs font-bold uppercase tracking-widest">Bienvenida a</p>
+            <h2 class="text-2xl font-black text-white tracking-tight">Auxi Moda</h2>
+            <p class="text-white/70 text-xs mt-1">Tu tienda de moda favorita</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-1">
+            <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-primary/10 text-primary font-bold text-sm"><span class="material-symbols-outlined">storefront</span>Catalogo</a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 text-slate-600 font-semibold text-sm transition-colors"><span class="material-symbols-outlined">favorite</span>Mis Favoritos</a>
+            <a href="cart.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 text-slate-600 font-semibold text-sm transition-colors"><span class="material-symbols-outlined">shopping_bag</span>Carrito</a>
+            <hr class="my-2 border-slate-100" />
+            <a href="admin.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 text-slate-500 font-semibold text-sm transition-colors"><span class="material-symbols-outlined">admin_panel_settings</span>Panel Admin</a>
+            <a href="https://wa.me/595991729824" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-green-50 text-green-600 font-semibold text-sm transition-colors"><span class="material-symbols-outlined">chat</span>Contactar por WhatsApp</a>
+        </nav>
+        <div class="p-4 pb-8 border-t border-slate-100"><p class="text-xs text-slate-400 text-center">2025 Auxi Moda</p></div>
+    </div>
+
+    <div id="filter-panel-overlay" class="fixed inset-0 bg-black/30 z-30" onclick="closeFilterPanel()"></div>
+    <div id="filter-panel" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-40 p-6 pb-10 shadow-2xl">
+        <div class="flex items-center justify-between mb-4">
+            <h3 id="filter-panel-title" class="font-black text-lg">Filtrar</h3>
+            <button onclick="closeFilterPanel()" class="p-2 rounded-full hover:bg-slate-100 active:scale-90 transition-all"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div id="filter-panel-options" class="flex flex-wrap gap-2"></div>
+        <button onclick="applyFilter(); closeFilterPanel();" class="mt-6 w-full py-4 bg-primary text-white font-black rounded-2xl active:scale-95 transition-transform">Aplicar</button>
+    </div>
+
+    <div class="relative flex min-h-screen flex-col">
+        <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur-md">
+            <div class="flex items-center px-4 py-3 justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="openDrawer()" class="p-2 hover:bg-slate-100 rounded-full transition-colors active:scale-90"><span class="material-symbols-outlined">menu</span></button>
+                    <h1 class="text-lg font-black tracking-tighter uppercase">Auxi Moda</h1>
+                </div>
+                <a href="cart.html" class="p-2 hover:bg-slate-100 rounded-full transition-colors active:scale-90"><span class="material-symbols-outlined">shopping_bag</span></a>
+            </div>
+            <div class="px-4 pb-3">
+                <div class="relative flex items-center w-full">
+                    <span class="material-symbols-outlined absolute left-3 text-slate-400" style="width:20px;height:20px;font-size:20px">search</span>
+                    <input id="search-input" type="text" class="w-full bg-slate-100 border-none rounded-xl py-2 pl-10 pr-4 focus:ring-2 focus:ring-primary/50 text-xs outline-none" placeholder="Buscar productos de moda..." oninput="renderProducts()" />
+                </div>
+            </div>
+        </header>
+        <main class="flex-1 pb-24">
+            <div class="px-4 py-3">
+                <div class="pastel-gradient rounded-xl p-4 text-center shadow-sm">
+                    <p class="text-white font-bold tracking-widest text-lg">REBAJAS -20%</p>
+                    <p class="text-white/90 text-xs font-medium uppercase">Codigo: YOUTH20</p>
+                </div>
+            </div>
+            <div class="px-4 py-3 border-b border-slate-100 bg-white overflow-x-auto">
+                <div class="flex items-center gap-3 min-w-max">
+                    <button class="filter-btn flex items-center gap-1 px-4 py-2 rounded-full bg-mint text-slate-700 text-xs font-bold shadow-sm" onclick="openFilterPanel('talla')">Talla <span class="material-symbols-outlined" style="font-size:16px;width:16px;height:16px">keyboard_arrow_down</span></button>
+                    <button class="filter-btn flex items-center gap-1 px-4 py-2 rounded-full bg-palepink text-slate-700 text-xs font-bold shadow-sm" onclick="openFilterPanel('color')">Color <span class="material-symbols-outlined" style="font-size:16px;width:16px;height:16px">keyboard_arrow_down</span></button>
+                    <button class="filter-btn flex items-center gap-1 px-4 py-2 rounded-full bg-lavender text-slate-700 text-xs font-bold shadow-sm" onclick="openFilterPanel('precio')">Precio <span class="material-symbols-outlined" style="font-size:16px;width:16px;height:16px">keyboard_arrow_down</span></button>
+                    <div class="h-6 w-px bg-slate-200 mx-1"></div>
+                    <button class="cat-btn active px-4 py-2 rounded-full text-xs font-bold shadow-sm transition-all" onclick="setCategory('todo', this)">Todo</button>
+                    <button class="cat-btn px-4 py-2 rounded-full bg-babyblue text-slate-600 text-xs font-bold transition-all" onclick="setCategory('casual', this)">Casual</button>
+                    <button class="cat-btn px-4 py-2 rounded-full bg-mint text-slate-600 text-xs font-bold transition-all" onclick="setCategory('deportiva', this)">Deportiva</button>
+                    <button class="cat-btn px-4 py-2 rounded-full bg-lavender text-slate-600 text-xs font-bold transition-all" onclick="setCategory('vestido', this)">Vestidos</button>
+                    <button class="cat-btn px-4 py-2 rounded-full bg-palepink text-slate-600 text-xs font-bold transition-all" onclick="setCategory('accesorio', this)">Accesorios</button>
+                </div>
+            </div>
+            <section class="px-4 py-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-black text-slate-800 flex items-center gap-2"><span class="w-2 h-5 bg-primary rounded-full"></span><span id="section-title">Todos los productos</span></h2>
+                    <span id="results-count" class="text-xs text-slate-400 font-bold"></span>
+                </div>
+                <div id="product-grid" class="grid grid-cols-2 gap-4"></div>
+                <div id="empty-grid" class="hidden py-16 text-center">
+                    <span class="material-symbols-outlined text-6xl text-slate-200">search_off</span>
+                    <p class="text-slate-400 font-bold mt-3">No encontramos productos</p>
+                    <a href="admin.html" class="inline-block mt-4 px-6 py-2 bg-primary text-white text-xs font-bold rounded-full">Cargar productos</a>
+                </div>
+            </section>
+        </main>
+        <nav class="fixed bottom-0 w-full border-t border-slate-200 bg-white/95 backdrop-blur-md px-4 pb-6 pt-2 z-10">
+            <div class="flex items-center justify-around max-w-lg mx-auto">
+                <a class="flex flex-col items-center gap-1 bottom-nav-active" href="index.html"><span class="material-symbols-outlined">storefront</span><span class="text-[10px] font-bold uppercase tracking-wider">Tienda</span></a>
+                <button class="flex flex-col items-center gap-1 text-slate-400" onclick="document.getElementById('search-input').focus(); window.scrollTo(0,0)"><span class="material-symbols-outlined">search</span><span class="text-[10px] font-bold uppercase tracking-wider">Buscar</span></button>
+                <a class="flex flex-col items-center gap-1 text-slate-400" href="cart.html"><span class="material-symbols-outlined">shopping_bag</span><span class="text-[10px] font-bold uppercase tracking-wider">Carrito</span></a>
+                <a class="flex flex-col items-center gap-1 text-slate-400" href="admin.html"><span class="material-symbols-outlined">admin_panel_settings</span><span class="text-[10px] font-bold uppercase tracking-wider">Admin</span></a>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        const DEFAULT_PRODUCTS = [
+            { id:'d1', name:'Vestido Seda', price:'Gs. 1.200.000', rawPrice:1200000, category:'vestido', badge:'Nuevo', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuB6AQ49yMi-eT1z63hzpMF9usXpjD56FoRppGHsGryRgL4Fgpo6QMxSec0H16YVOCy0By_ZvOI7jLJUQgwk0vZOJ7Cwz5NjyYY0yNl1RMsvCkiLrHXTdal9R24d3almTvL5jXxqp5LyYHTyJn8ju08o6jzG577YQq0wpia-RoW1SmooZ40_4GR8hGc8WrxkehL_7lGBIayvh4xY4QM8fl1s4oEPq8mKBYO1Z5wgT806nw8sNrXHBrmPQ68JsPoE1ZCV9OtxzWp76kE' },
+            { id:'d2', name:'Falda Floral', price:'Gs. 450.000', rawPrice:450000, category:'vestido', badge:'', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuDeVv5k_-k6zfhCAVPIcxsVsatzTUFq5-apJ4JCVn0jI6XqJX9D-5rsKfoj-6TVVr5Mq4HfgcX59JBxUOyBRTwpRGZN9coC0RLVkmaEzW5M0u5khDNzJ8aTye0DldQeJWIL8kP0gkd3PmvDLeHcv7wIGGTU7HtxCSG5Y2bXlvcaW0jLjzKiKJQCizfcmxXrsfk8tdCp-3k5zjnFSwUsIDUo9Q7vQ1c_Tq14YXZDTxoWXwzOaQpz-KWepqXlET3ZEOHRW9IDoiV0TPM' },
+            { id:'d3', name:'Blusa Lino', price:'Gs. 550.000', rawPrice:550000, category:'casual', badge:'Top', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuC_tLKFfO7x9xUWTTxscNeKJa7_Y26cMbvmFtP2idVU36AH9dOG-eTDUIldkMZBHPxWlOtbPg9q1FP26SJ5DR_5XXa_AFvt0lJ2MbJ4akxw8FLK-uDd50DrybeBC2wa38KOvUl-arfsKa50Mz_N7_1fh-UkMhoV2PUBpbu7kNJUaHdPG1bDg0GxCUFx_sbIsfb_-gQ_JRnCI7wGEyUyRL8gWV7ewvNb2Ss215QgxsnmUUvD2PvqTYLUHpVHaGNhX6UvkSpS7ujm4eA' },
+            { id:'d4', name:'Chaleco Punto', price:'Gs. 380.000', rawPrice:380000, category:'casual', badge:'', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuDXcbWFZpBvsa7OGd8ZU_n36DLEvCguKSD_GhrpjtSdqXPDQhaD1Y2Kht06BJZFXPlmqW0FWzFP683ow-BfmR9wyk9xeL8ZSRHwTpJDruNTFCi2JlWliglWWAxE_GQEF8yh5pabc055TQs0sBI9W8hGwQCszKBL8a26N_RJszbCfBNRhYFBYiHpfAV2Hc96ZbwZO5kxthDl8zk8D6pa8TAfYnh7BGfnT5mQ4BRsIJkf9OoZHCxxF55FXfEnfaDcuX3YztgMTQCgzXE' },
+            { id:'d5', name:'Chaqueta Jean', price:'Gs. 850.000', rawPrice:850000, category:'casual', badge:'', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuBTbnqQUauyhAJKK4t1v85pFsRAPuz7Z0oaOIKsURbihSiM9CyOjcrXg52sz4kwYBVJPgWvfaRZSDPU5VRCGrkAyHyWUYA3Xoi7B9yxjq-wMJOy-mnoclXpte8pYGhHAi02kUnJ7v1AWmc7McOHdp39gHIXprZThfKwOTE0Ho4Yd9UpSThCmp2A5f7SeybqSWeR1JeaxngefLRfxoSgd6f6gFXlAaV8fJ8JV8gCBxy0-MG3lg7bzbnmxQQ-IDP7mPbitRexY0CDNwg' },
+            { id:'d6', name:'Sandalias Cuero', price:'Gs. 420.000', rawPrice:420000, category:'accesorio', badge:'', img:'https://lh3.googleusercontent.com/aida-public/AB6AXuBXyk7_TdfH0CSe1jW4IKn-D0bizAAXfiqx3Al3tOIM1lZprxLJT-aR66uXICCgy9gUzL_hG91FpB4O2bt8hqbpzb5vyw-OcR3Rc5yDiGs8XuC6DyjuJO5f9e8lHL4L_he5q4ED811SHA5EjgjdbiuMPuONYCJFa-zNVEeYuqczAr8q8xeda3LXTikFFmLnZs81ykzJyZHRzblCXgSM9c-u5oK6WsWViAoYNd8J2wBqJRZyRp_4PHV5S3lPsg55QR-bdK6N67GFl2c' },
+        ];
+        const TALLAS=['XS','S','M','L','XL','XXL','Unica'];
+        const COLORES=['Negro','Blanco','Rosa','Azul','Verde','Amarillo','Violeta'];
+        const PRECIOS=['Hasta Gs. 400.000','Gs. 400.000 - 800.000','Gs. 800.000 - 1.200.000','Mas de Gs. 1.200.000'];
+        let activeCategory='todo', activeTalla=null, activeColor=null, activePrecio=null, currentFilterType=null, pendingFilter=null;
+        function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');}
+        function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');}
+        const FILTER_CONFIG={talla:{title:'Seleccionar Talla',options:TALLAS},color:{title:'Seleccionar Color',options:COLORES},precio:{title:'Rango de Precio',options:PRECIOS}};
+        function openFilterPanel(type){
+            currentFilterType=type; const config=FILTER_CONFIG[type]; document.getElementById('filter-panel-title').textContent=config.title;
+            const cv=type==='talla'?activeTalla:type==='color'?activeColor:activePrecio;
+            document.getElementById('filter-panel-options').innerHTML=config.options.map(opt=>'<button onclick="selectPendingFilter(\''+opt+'\')" class="px-4 py-2 rounded-full text-xs font-bold border-2 transition-all '+(cv===opt?'border-primary bg-primary text-white':'border-slate-200 bg-slate-50 text-slate-600')+'" id="opt-'+opt.replace(/\s/g,'')+'">' +opt+'</button>').join('');
+            pendingFilter=cv; document.getElementById('filter-panel').classList.add('open'); document.getElementById('filter-panel-overlay').classList.add('open');
+        }
+        function selectPendingFilter(val){
+            pendingFilter=pendingFilter===val?null:val;
+            FILTER_CONFIG[currentFilterType].options.forEach(opt=>{const btn=document.getElementById('opt-'+opt.replace(/\s/g,''));if(!btn)return;btn.className='px-4 py-2 rounded-full text-xs font-bold border-2 transition-all '+(pendingFilter===opt?'border-primary bg-primary text-white':'border-slate-200 bg-slate-50 text-slate-600');});
+        }
+        function applyFilter(){if(currentFilterType==='talla')activeTalla=pendingFilter;else if(currentFilterType==='color')activeColor=pendingFilter;else if(currentFilterType==='precio')activePrecio=pendingFilter;renderProducts();}
+        function closeFilterPanel(){document.getElementById('filter-panel').classList.remove('open');document.getElementById('filter-panel-overlay').classList.remove('open');}
+        function setCategory(cat,btn){
+            activeCategory=cat;
+            document.querySelectorAll('.cat-btn').forEach(b=>{b.classList.remove('active');if(b.textContent.trim()==='Casual')b.className='cat-btn px-4 py-2 rounded-full bg-babyblue text-slate-600 text-xs font-bold transition-all';else if(b.textContent.trim()==='Deportiva')b.className='cat-btn px-4 py-2 rounded-full bg-mint text-slate-600 text-xs font-bold transition-all';else if(b.textContent.trim()==='Vestidos')b.className='cat-btn px-4 py-2 rounded-full bg-lavender text-slate-600 text-xs font-bold transition-all';else if(b.textContent.trim()==='Accesorios')b.className='cat-btn px-4 py-2 rounded-full bg-palepink text-slate-600 text-xs font-bold transition-all';else b.className='cat-btn px-4 py-2 rounded-full text-xs font-bold shadow-sm transition-all bg-slate-100 text-slate-500';});
+            btn.classList.add('active');
+            const titles={todo:'Todos los productos',vestido:'Vestidos',casual:'Casual',deportiva:'Deportiva',accesorio:'Accesorios'};
+            document.getElementById('section-title').textContent=titles[cat]||'Productos'; renderProducts();
+        }
+        function getAllProducts(){const custom=JSON.parse(localStorage.getItem('auxiModa_catalog')||'[]');return [...custom,...DEFAULT_PRODUCTS];}
+        function priceInRange(rp,range){if(!range)return true;if(range.includes('400.000')||range==='Hasta Gs. 400.000')return rp<=400000;if(range==='Gs. 400.000 - 800.000')return rp>400000&&rp<=800000;if(range==='Gs. 800.000 - 1.200.000')return rp>800000&&rp<=1200000;if(range.includes('Mas'))return rp>1200000;return true;}
+        function renderProducts(){
+            const query=document.getElementById('search-input').value.toLowerCase().trim();
+            let products=getAllProducts();
+            if(activeCategory!=='todo')products=products.filter(p=>p.category===activeCategory);
+            if(activePrecio)products=products.filter(p=>priceInRange(p.rawPrice,activePrecio));
+            if(query)products=products.filter(p=>p.name.toLowerCase().includes(query));
+            const grid=document.getElementById('product-grid'); const empty=document.getElementById('empty-grid');
+            document.getElementById('results-count').textContent=products.length+' resultado'+(products.length!==1?'s':'');
+            if(products.length===0){grid.innerHTML='';empty.classList.remove('hidden');}
+            else{
+                empty.classList.add('hidden');
+                grid.innerHTML=products.map((p,i)=>'<a href="product-detail.html?name='+encodeURIComponent(p.name)+'&price='+encodeURIComponent(p.price)+'&img='+encodeURIComponent(p.img)+'" class="product-card-touch group flex flex-col gap-2 animate-fade-in" style="animation-delay:'+i*0.05+'s"><div class="relative aspect-[3/4] overflow-hidden rounded-2xl bg-slate-100 shadow-sm transition-transform active:scale-95"><img alt="'+p.name+'" class="h-full w-full object-cover" src="'+p.img+'" onerror="this.src=\'https://placehold.co/300x400/FFB7CE/white?text=AM\'" />'+(p.badge?'<div class="absolute top-2 left-2"><span class="bg-white/80 backdrop-blur-sm text-slate-700 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full">'+p.badge+'</span></div>':'')+'</div><div><h3 class="text-xs font-bold text-slate-800 leading-tight">'+p.name+'</h3><p class="text-primary font-black text-sm mt-0.5">'+p.price+'</p></div></a>').join('');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', renderProducts);
+    </script>
+</body>
+</html>
