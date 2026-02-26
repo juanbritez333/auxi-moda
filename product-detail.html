@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Auxi Moda - Detalle del Producto</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: { extend: { colors: { "primary": "#FFB7CE", "mint": "#E0FFF0", "lavender": "#E6E6FA", "babyblue": "#E0F4FF", "palepink": "#FFEBEE", "background-light": "#FFFFFF", "background-dark": "#1A1A1A" }, fontFamily: { "display": ["Quicksand", "sans-serif"] }, borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" } } }
+        }
+    </script>
+    <style>
+        .pastel-gradient { background: linear-gradient(135deg, #FFB7CE 0%, #E6E6FA 100%); }
+        body { font-family: 'Quicksand', sans-serif; overflow-x: hidden; min-height: 100dvh; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+    <div class="relative flex min-h-screen flex-col animate-fade-in">
+        <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md">
+            <div class="flex items-center px-4 py-3 md:px-8 justify-between">
+                <div class="flex items-center gap-3">
+                    <a href="index.html" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors active:scale-90">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                    </a>
+                    <h1 class="text-lg font-bold tracking-tighter text-slate-900 dark:text-slate-100 uppercase">Detalle</h1>
+                </div>
+                <div class="flex items-center gap-1">
+                    <a href="cart.html" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors active:scale-90">
+                        <span class="material-symbols-outlined">shopping_bag</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <main class="flex-1 pb-32">
+            <div class="w-full aspect-[4/5] bg-slate-100 overflow-hidden shadow-inner">
+                <img id="product-image" alt="Product" class="h-full w-full object-cover" src="" />
+            </div>
+            <div class="px-6 py-6 space-y-6 -mt-6 bg-white dark:bg-background-dark rounded-t-[32px] relative z-10">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 id="product-name" class="text-2xl font-bold text-slate-800 tracking-tight">Cargando...</h2>
+                        <p id="product-price" class="text-2xl font-black text-primary mt-1">Gs. 0</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Descripcion</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">Diseno exclusivo pensado para la mujer moderna. Calidad premium y estilo inigualable solo en Auxi Moda.</p>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Seleccionar Talla</h3>
+                    <div class="flex gap-4">
+                        <button class="flex-1 py-3 rounded-2xl border-2 border-primary bg-primary/10 text-primary font-bold active:scale-95 transition-transform">S</button>
+                        <button class="flex-1 py-3 rounded-2xl border-2 border-slate-100 text-slate-600 font-bold active:scale-95 transition-transform">M</button>
+                        <button class="flex-1 py-3 rounded-2xl border-2 border-slate-100 text-slate-600 font-bold active:scale-95 transition-transform">L</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div class="fixed bottom-0 w-full p-4 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-slate-100 dark:border-slate-800 z-50">
+            <button id="add-to-cart" class="w-full py-4 bg-primary text-white font-black text-lg rounded-2xl shadow-xl shadow-primary/30 active:scale-95 transition-transform uppercase tracking-widest">
+                Comprar Ahora
+            </button>
+        </div>
+        <script>
+            const params = new URLSearchParams(window.location.search);
+            const name = params.get('name');
+            const price = params.get('price');
+            const img = params.get('img');
+            if (name) document.getElementById('product-name').innerText = name;
+            if (price) document.getElementById('product-price').innerText = price;
+            if (img) document.getElementById('product-image').src = img;
+            document.getElementById('add-to-cart').addEventListener('click', () => {
+                const cartUrl = 'cart.html?name=' + encodeURIComponent(name || '') + '&price=' + encodeURIComponent(price || '') + '&img=' + encodeURIComponent(img || '');
+                window.location.href = cartUrl;
+            });
+        </script>
+    </div>
+</body>
+</html>
