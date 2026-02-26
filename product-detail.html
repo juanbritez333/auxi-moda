@@ -1,83 +1,226 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Auxi Moda - Detalle del Producto</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
-    <script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
-            theme: { extend: { colors: { "primary": "#FFB7CE", "mint": "#E0FFF0", "lavender": "#E6E6FA", "babyblue": "#E0F4FF", "palepink": "#FFEBEE", "background-light": "#FFFFFF", "background-dark": "#1A1A1A" }, fontFamily: { "display": ["Quicksand", "sans-serif"] }, borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" } } }
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FFB7CE",
+                        "mint": "#E0FFF0",
+                        "lavender": "#E6E6FA",
+                        "babyblue": "#E0F4FF",
+                        "palepink": "#FFEBEE",
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#1A1A1A",
+                    },
+                    fontFamily: { "display": ["Quicksand", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
         }
     </script>
     <style>
         .pastel-gradient { background: linear-gradient(135deg, #FFB7CE 0%, #E6E6FA 100%); }
         body { font-family: 'Quicksand', sans-serif; overflow-x: hidden; min-height: 100dvh; }
+        .spinner { display:inline-block; width:32px; height:32px; border:4px solid rgba(255,183,206,0.4); border-top-color:#FFB7CE; border-radius:50%; animation:spin 0.8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .size-btn { flex:1; padding:12px; border-radius:16px; border:2px solid #e2e8f0; color:#475569; font-weight:700; transition:all 0.15s; }
+        .size-btn.active { border-color:#FFB7CE; background:#FFB7CE20; color:#FFB7CE; }
     </style>
 </head>
+
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
-    <div class="relative flex min-h-screen flex-col animate-fade-in">
-        <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md">
-            <div class="flex items-center px-4 py-3 md:px-8 justify-between">
+    <div class="relative flex min-h-screen flex-col">
+
+        <!-- Header -->
+        <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md">
+            <div class="flex items-center px-4 py-3 justify-between">
                 <div class="flex items-center gap-3">
-                    <a href="index.html" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors active:scale-90">
+                    <a href="index.html" class="p-2 hover:bg-slate-100 rounded-full transition-colors active:scale-90">
                         <span class="material-symbols-outlined">arrow_back</span>
                     </a>
-                    <h1 class="text-lg font-bold tracking-tighter text-slate-900 dark:text-slate-100 uppercase">Detalle</h1>
+                    <h1 class="text-lg font-bold tracking-tighter uppercase">Detalle</h1>
                 </div>
-                <div class="flex items-center gap-1">
-                    <a href="cart.html" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors active:scale-90">
-                        <span class="material-symbols-outlined">shopping_bag</span>
-                    </a>
-                </div>
+                <a href="cart.html" class="p-2 hover:bg-slate-100 rounded-full transition-colors active:scale-90">
+                    <span class="material-symbols-outlined">shopping_bag</span>
+                </a>
             </div>
         </header>
-        <main class="flex-1 pb-32">
+
+        <!-- Loading state -->
+        <div id="loading-state" class="flex flex-col items-center justify-center flex-1 py-24 gap-4">
+            <div class="spinner"></div>
+            <p class="text-slate-400 text-sm font-medium">Cargando producto...</p>
+        </div>
+
+        <!-- Error state (hidden by default) -->
+        <div id="error-state" class="hidden flex flex-col items-center justify-center flex-1 py-24 gap-4 px-8 text-center">
+            <span class="material-symbols-outlined text-6xl text-slate-200">error</span>
+            <p class="text-slate-500 font-bold">No se pudo cargar el producto</p>
+            <a href="index.html" class="mt-2 px-6 py-2 bg-primary text-white text-sm font-bold rounded-full">
+                Volver al catalogo
+            </a>
+        </div>
+
+        <!-- Product content (hidden until loaded) -->
+        <main id="product-content" class="hidden flex-1 pb-32">
+            <!-- Product Image -->
             <div class="w-full aspect-[4/5] bg-slate-100 overflow-hidden shadow-inner">
-                <img id="product-image" alt="Product" class="h-full w-full object-cover" src="" />
+                <img id="product-image" alt="Producto" class="h-full w-full object-cover"
+                    onerror="this.src='https://placehold.co/400x500/FFB7CE/white?text=AM'" />
             </div>
-            <div class="px-6 py-6 space-y-6 -mt-6 bg-white dark:bg-background-dark rounded-t-[32px] relative z-10">
+
+            <!-- Product Details -->
+            <div class="px-6 py-6 space-y-6 -mt-6 bg-white rounded-t-[32px] relative z-10">
                 <div class="flex justify-between items-start">
                     <div>
-                        <h2 id="product-name" class="text-2xl font-bold text-slate-800 tracking-tight">Cargando...</h2>
-                        <p id="product-price" class="text-2xl font-black text-primary mt-1">Gs. 0</p>
+                        <h2 id="product-name" class="text-2xl font-bold text-slate-800 tracking-tight"></h2>
+                        <p id="product-price" class="text-2xl font-black text-primary mt-1"></p>
                     </div>
+                    <span id="product-badge" class="hidden text-xs font-bold uppercase tracking-widest px-3 py-1.5 bg-primary/10 text-primary rounded-full"></span>
                 </div>
+
                 <div class="space-y-3">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Descripcion</h3>
-                    <p class="text-slate-600 leading-relaxed text-sm">Diseno exclusivo pensado para la mujer moderna. Calidad premium y estilo inigualable solo en Auxi Moda.</p>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Diseno exclusivo pensado para la mujer moderna. Calidad premium y estilo inigualable solo en Auxi Moda.
+                    </p>
                 </div>
+
                 <div class="space-y-4">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Seleccionar Talla</h3>
-                    <div class="flex gap-4">
-                        <button class="flex-1 py-3 rounded-2xl border-2 border-primary bg-primary/10 text-primary font-bold active:scale-95 transition-transform">S</button>
-                        <button class="flex-1 py-3 rounded-2xl border-2 border-slate-100 text-slate-600 font-bold active:scale-95 transition-transform">M</button>
-                        <button class="flex-1 py-3 rounded-2xl border-2 border-slate-100 text-slate-600 font-bold active:scale-95 transition-transform">L</button>
+                    <div class="flex gap-3" id="size-buttons">
+                        <button class="size-btn active" onclick="selectSize(this)">S</button>
+                        <button class="size-btn" onclick="selectSize(this)">M</button>
+                        <button class="size-btn" onclick="selectSize(this)">L</button>
+                        <button class="size-btn" onclick="selectSize(this)">XL</button>
                     </div>
                 </div>
             </div>
         </main>
-        <div class="fixed bottom-0 w-full p-4 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-slate-100 dark:border-slate-800 z-50">
-            <button id="add-to-cart" class="w-full py-4 bg-primary text-white font-black text-lg rounded-2xl shadow-xl shadow-primary/30 active:scale-95 transition-transform uppercase tracking-widest">
-                Comprar Ahora
+
+        <!-- Floating Buy Button -->
+        <div id="buy-bar" class="hidden fixed bottom-0 w-full p-4 bg-white/90 backdrop-blur-md border-t border-slate-100 z-50">
+            <button id="add-to-cart"
+                class="w-full py-4 bg-primary text-white font-black text-lg rounded-2xl shadow-xl shadow-primary/30 active:scale-95 transition-transform uppercase tracking-widest">
+                Agregar al Carrito
             </button>
         </div>
-        <script>
-            const params = new URLSearchParams(window.location.search);
-            const name = params.get('name');
-            const price = params.get('price');
-            const img = params.get('img');
-            if (name) document.getElementById('product-name').innerText = name;
-            if (price) document.getElementById('product-price').innerText = price;
-            if (img) document.getElementById('product-image').src = img;
-            document.getElementById('add-to-cart').addEventListener('click', () => {
-                const cartUrl = 'cart.html?name=' + encodeURIComponent(name || '') + '&price=' + encodeURIComponent(price || '') + '&img=' + encodeURIComponent(img || '');
-                window.location.href = cartUrl;
-            });
-        </script>
     </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, doc, getDoc }
+            from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkdrO8opyGejZXvieiK7Vv5__oiDCTa74",
+            authDomain: "auxi-moda.firebaseapp.com",
+            projectId: "auxi-moda",
+            storageBucket: "auxi-moda.firebasestorage.app",
+            messagingSenderId: "1096212363445",
+            appId: "1:1096212363445:web:a33fc752d92387b71666fc"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get('id');
+
+        if (!productId) {
+            showError();
+        } else {
+            try {
+                const docRef = doc(db, 'productos', productId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const p = { id: docSnap.id, ...docSnap.data() };
+                    window._product = p;
+                    document.getElementById('product-image').src = p.img;
+                    document.getElementById('product-name').textContent = p.name;
+                    document.getElementById('product-price').textContent = p.price;
+                    if (p.badge) {
+                        const badgeEl = document.getElementById('product-badge');
+                        badgeEl.textContent = p.badge;
+                        badgeEl.classList.remove('hidden');
+                    }
+                    document.title = 'Auxi Moda - ' + p.name;
+                    document.getElementById('loading-state').classList.add('hidden');
+                    document.getElementById('product-content').classList.remove('hidden');
+                    document.getElementById('buy-bar').classList.remove('hidden');
+                } else {
+                    showError();
+                }
+            } catch (err) {
+                console.error(err);
+                showError();
+            }
+        }
+
+        function showError() {
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('error-state').classList.remove('hidden');
+        }
+    </script>
+
+    <script>
+        let selectedSize = 'S';
+
+        function selectSize(btn) {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedSize = btn.textContent.trim();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('add-to-cart').addEventListener('click', () => {
+                const p = window._product;
+                if (!p) return;
+
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const existing = cart.find(item => item.id === p.id && item.size === selectedSize);
+                if (existing) {
+                    existing.qty = (existing.qty || 1) + 1;
+                } else {
+                    cart.push({
+                        id: p.id,
+                        name: p.name,
+                        price: p.price,
+                        rawPrice: p.rawPrice,
+                        img: p.img,
+                        size: selectedSize,
+                        qty: 1
+                    });
+                }
+
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                const btn = document.getElementById('add-to-cart');
+                btn.textContent = 'Agregado al Carrito!';
+                btn.classList.remove('bg-primary');
+                btn.classList.add('bg-green-400');
+                setTimeout(() => {
+                    btn.textContent = 'Agregar al Carrito';
+                    btn.classList.add('bg-primary');
+                    btn.classList.remove('bg-green-400');
+                }, 1800);
+            });
+        });
+    </script>
 </body>
+
 </html>
