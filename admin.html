@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Auxi Moda - Panel de Administracion</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { "primary": "#FFB7CE", "mint": "#E0FFF0", "lavender": "#E6E6FA", "palepink": "#FFEBEE" }, fontFamily: { "display": ["Quicksand", "sans-serif"] }, borderRadius: { "DEFAULT": "0.5rem", "xl": "1.5rem", "full": "9999px" } } } }
+    </script>
+    <style>
+        body { font-family: 'Quicksand', sans-serif; overflow-x: hidden; background: #FAFAFA; }
+        .img-preview { width: 80px; height: 100px; object-fit: cover; border-radius: 12px; }
+        .tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .modal { background: white; border-radius: 24px; padding: 24px; width: 90%; max-width: 380px; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <header class="sticky top-0 z-50 bg-white border-b border-slate-200">
+        <div class="flex items-center px-4 py-3 justify-between">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="p-2 rounded-full hover:bg-slate-100 active:scale-90 transition-all">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <h1 class="text-lg font-bold tracking-tight uppercase">Panel Admin</h1>
+            </div>
+            <span class="text-xs bg-primary/20 text-primary font-bold px-3 py-1 rounded-full">Auxi Moda</span>
+        </div>
+    </header>
+    <main class="px-4 py-6 pb-24 max-w-lg mx-auto space-y-6">
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+            <h2 class="font-black text-xl mb-5 flex items-center gap-2">
+                <span class="w-2 h-6 bg-primary rounded-full"></span>
+                Cargar Nueva Prenda
+            </h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Nombre *</label>
+                    <input id="inp-name" type="text" placeholder="Ej: Vestido Floral" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Precio (Gs.) *</label>
+                        <input id="inp-price" type="number" placeholder="Ej: 450000" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100" />
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Categoria *</label>
+                        <select id="inp-category" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100">
+                            <option value="vestido">Vestidos</option>
+                            <option value="casual">Casual</option>
+                            <option value="deportiva">Deportiva</option>
+                            <option value="accesorio">Accesorios</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Etiquetar como</label>
+                    <select id="inp-badge" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100">
+                        <option value="">Sin etiqueta</option>
+                        <option value="Nuevo">Nuevo</option>
+                        <option value="Oferta">Oferta</option>
+                        <option value="Top">Top</option>
+                        <option value="Exclusivo">Exclusivo</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Imagen del producto *</label>
+                    <div class="flex gap-2 mb-3">
+                        <button onclick="setImgSource('url')" id="btn-url" class="flex-1 py-2 rounded-xl text-xs font-bold border-2 border-primary bg-primary/10 text-primary">Pegar URL</button>
+                        <button onclick="setImgSource('upload')" id="btn-upload" class="flex-1 py-2 rounded-xl text-xs font-bold border-2 border-slate-200 text-slate-500">Subir foto</button>
+                    </div>
+                    <div id="source-url">
+                        <input id="inp-img-url" type="url" placeholder="https://..." class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/50 border border-slate-100" />
+                    </div>
+                    <div id="source-upload" class="hidden">
+                        <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                            <span class="material-symbols-outlined text-slate-400 text-4xl">cloud_upload</span>
+                            <span class="text-xs text-slate-400 mt-1">Toca para elegir una foto</span>
+                            <input id="inp-img-file" type="file" accept="image/*" class="hidden" onchange="previewUpload(this)" />
+                        </label>
+                        <div id="upload-preview" class="mt-2 hidden">
+                            <img id="upload-preview-img" class="img-preview" />
+                        </div>
+                    </div>
+                </div>
+                <div id="img-preview-box" class="hidden flex-col items-center gap-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Vista previa</label>
+                    <img id="img-preview-el" class="img-preview shadow-sm" />
+                </div>
+                <button onclick="addProduct()" class="w-full py-4 bg-primary text-white font-black text-base rounded-2xl shadow-lg shadow-primary/30 active:scale-95 transition-transform uppercase tracking-widest">
+                    + Agregar al Catalogo
+                </button>
+            </div>
+        </div>
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="font-black text-xl flex items-center gap-2">
+                    <span class="w-2 h-6 bg-mint rounded-full"></span>
+                    Mis Prendas
+                </h2>
+                <span id="product-count" class="text-xs bg-slate-100 text-slate-500 font-bold px-3 py-1 rounded-full">0 productos</span>
+            </div>
+            <div id="catalog-list" class="space-y-3">
+                <p class="text-slate-400 text-sm text-center py-6" id="empty-msg">Todavia no cargaste ninguna prenda.</p>
+            </div>
+        </div>
+        <div class="bg-lavender/50 rounded-2xl p-4 flex gap-3 items-start">
+            <span class="material-symbols-outlined text-slate-500 text-xl mt-0.5">info</span>
+            <div>
+                <p class="text-xs font-bold text-slate-600">Como funciona?</p>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Los productos que cargas aca aparecen automaticamente en la tienda. Se guardan en el navegador. Para una solucion permanente, guarda las fotos en Google Drive y usa el enlace.</p>
+            </div>
+        </div>
+    </main>
+    <div id="del-modal" class="modal-bg hidden">
+        <div class="modal">
+            <h3 class="font-black text-lg mb-2">Eliminar prenda?</h3>
+            <p class="text-slate-500 text-sm mb-5" id="del-modal-name">Esta accion no se puede deshacer.</p>
+            <div class="flex gap-3">
+                <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">Cancelar</button>
+                <button onclick="confirmDelete()" class="flex-1 py-3 bg-red-400 text-white font-bold rounded-xl text-sm">Eliminar</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const STORAGE_KEY = 'auxiModa_catalog';
+        let deleteTargetId = null, imgSourceMode = 'url', uploadedBase64 = null;
+        function setImgSource(mode) {
+            imgSourceMode = mode;
+            document.getElementById('source-url').classList.toggle('hidden', mode !== 'url');
+            document.getElementById('source-upload').classList.toggle('hidden', mode !== 'upload');
+            document.getElementById('btn-url').className = mode === 'url' ? 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-primary bg-primary/10 text-primary' : 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-slate-200 text-slate-500';
+            document.getElementById('btn-upload').className = mode === 'upload' ? 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-primary bg-primary/10 text-primary' : 'flex-1 py-2 rounded-xl text-xs font-bold border-2 border-slate-200 text-slate-500';
+        }
+        function previewUpload(input) {
+            const file = input.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => { uploadedBase64 = e.target.result; document.getElementById('upload-preview').classList.remove('hidden'); document.getElementById('upload-preview-img').src = uploadedBase64; };
+            reader.readAsDataURL(file);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('inp-img-url').addEventListener('input', (e) => {
+                const url = e.target.value.trim();
+                const box = document.getElementById('img-preview-box'); const el = document.getElementById('img-preview-el');
+                if (url) { box.classList.remove('hidden'); box.classList.add('flex'); el.src = url; }
+                else { box.classList.add('hidden'); box.classList.remove('flex'); }
+            });
+            renderCatalog();
+        });
+        function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+        function saveProducts(p) { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
+        function addProduct() {
+            const name = document.getElementById('inp-name').value.trim();
+            const priceRaw = document.getElementById('inp-price').value.trim();
+            const category = document.getElementById('inp-category').value;
+            const badge = document.getElementById('inp-badge').value;
+            let imgSrc = imgSourceMode === 'url' ? document.getElementById('inp-img-url').value.trim() : (uploadedBase64 || '');
+            if (!name || !priceRaw || !imgSrc) { alert('Por favor completa el nombre, precio e imagen.'); return; }
+            const price = Number(priceRaw);
+            const product = { id: Date.now().toString(), name, price: 'Gs. ' + price.toLocaleString('es-PY'), rawPrice: price, category, badge, img: imgSrc };
+            const products = getProducts(); products.unshift(product); saveProducts(products); renderCatalog(); resetForm();
+        }
+        function resetForm() {
+            ['inp-name','inp-price','inp-img-url','inp-badge'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('inp-img-file').value = '';
+            document.getElementById('img-preview-box').classList.add('hidden'); document.getElementById('img-preview-box').classList.remove('flex');
+            document.getElementById('upload-preview').classList.add('hidden'); uploadedBase64 = null;
+        }
+        function renderCatalog() {
+            const products = getProducts();
+            document.getElementById('product-count').textContent = products.length + ' producto' + (products.length !== 1 ? 's' : '');
+            document.getElementById('empty-msg').style.display = products.length === 0 ? 'block' : 'none';
+            document.getElementById('catalog-list').innerHTML = products.map(p => '<div class="flex gap-4 items-center p-3 bg-slate-50 rounded-2xl border border-slate-100"><img src="' + p.img + '" class="img-preview flex-shrink-0" onerror="this.src=\'https://placehold.co/80x100/FFB7CE/white?text=?\'" /><div class="flex-1 min-w-0"><p class="font-bold text-slate-800 text-sm truncate">' + p.name + '</p><p class="text-primary font-black text-base">' + p.price + '</p><p class="text-slate-400 text-xs capitalize">' + p.category + '</p></div><button onclick="openDeleteModal(\'' + p.id + '\', \'' + p.name.replace(/'/g, "\\'") + '\')" class="p-2 text-red-300 hover:text-red-500 active:scale-90 flex-shrink-0"><span class="material-symbols-outlined">delete</span></button></div>').join('');
+        }
+        function openDeleteModal(id, name) { deleteTargetId = id; document.getElementById('del-modal-name').textContent = '"' + name + '" sera eliminada.'; document.getElementById('del-modal').classList.remove('hidden'); }
+        function closeDeleteModal() { deleteTargetId = null; document.getElementById('del-modal').classList.add('hidden'); }
+        function confirmDelete() { if (!deleteTargetId) return; saveProducts(getProducts().filter(p => p.id !== deleteTargetId)); renderCatalog(); closeDeleteModal(); }
+    </script>
+</body>
+</html>
